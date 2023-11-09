@@ -1,9 +1,11 @@
 import os, sys
+
 if not sys.stderr:
     os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 if getattr(sys, 'frozen', False):
     from kivy.resources import resource_add_path
+
     resource_add_path(sys._MEIPASS)
 
 from kivy.app import App
@@ -20,7 +22,6 @@ from datetime import datetime, timedelta
 from collections import Counter
 import trio
 from functools import partial
-
 
 KV = '''
 #:import Factory kivy.factory.Factory
@@ -74,6 +75,7 @@ FloatLayout:
             holds: holds
 '''
 
+
 class CargoApp(App):
     title = "Cargo"
     prod = StringProperty("")
@@ -87,8 +89,8 @@ class CargoApp(App):
 
     cargo = ListProperty([])
 
-    # "http://0.0.0.0:8080/api/"
-    api = db.Api("http://192.168.1.10/api/")
+    #api = db.Api("http://192.168.1.10/api/")
+    api = db.Api("http://0.0.0.0:8080/api/")
 
     async def async_run(self):
         async with trio.open_nursery() as nursery:
@@ -106,34 +108,35 @@ class CargoApp(App):
     def build(self):
         Window.maximize()
         self.update_time()
-        Clock.schedule_interval(self.update_time,10)
-        Clock.schedule_once(partial(self.nursery.start_soon, self.api.get_db_pallets),.5)
+        Clock.schedule_interval(self.update_time, 10)
+        Clock.schedule_once(partial(self.nursery.start_soon, self.api.get_db_pallets), .5)
         Clock.schedule_interval(partial(self.nursery.start_soon, self.api.get_db_pallets), 5)
         return Builder.load_string(KV)
 
-    def update_time(self,dt=0):
+    def update_time(self, dt=0):
         self.time = datetime.utcnow()
         self.time_string = self.time.strftime('%Y-%m-%d %H:%M')
 
-    def set_pallets(self,data,hold,space,_datetime,label,layer,_id,dt=0):
+    def set_pallets(self, data, hold, space, _datetime, label, layer, _id, dt=0):
         space = self.root.holds[hold].children[space]
-        space.add_pallet(data,space.children[layer],_datetime,label,_id)
+        space.add_pallet(data, space.children[layer], _datetime, label, _id)
 
     def clear_cargo(self):
-        for hold in [0,1]:
+        for hold in [0, 1]:
             for space in self.root.holds[hold].children:
                 space.clear_pallet()
                 space.clear_pallet()
 
-    def set_catch_view(self,rv):
+    def set_catch_view(self, rv):
         print(self.cargo)
         labels = [i.get("label") for i in self.cargo]
         count_dict = dict(Counter(labels))
         data = [{"text": self.search_prod(str(key)).get("text", ""),
-                 "count":str(val),"group":self.search_prod(str(key)).get("group", ""),
-                 "label":str(key)} for key,val in count_dict.items()]
+                 "count": str(val), "group": self.search_prod(str(key)).get("group", ""),
+                 "label": str(key)} for key, val in count_dict.items()]
         rv.data = data
         return data
+
 
 if __name__ == '__main__':
     app = CargoApp()

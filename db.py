@@ -9,7 +9,7 @@ class Api:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    async def add_db_pallet(self ,dt ,label ,hold ,space ,layer):
+    async def add_db_pallet(self, dt, label, hold, space, layer):
         app = App.get_running_app()
         # POST Request (Add a Pallet)
         data = {
@@ -29,8 +29,7 @@ class Api:
         except httpx.ConnectError:
             print("Failed to connect to the server.")
 
-
-    async def delete_db_pallet(self ,db_id):
+    async def delete_db_pallet(self, db_id):
         app = App.get_running_app()
         # DELETE Request (Delete a Pallet)
         try:
@@ -41,7 +40,6 @@ class Api:
         except httpx.ConnectError:
             print("Failed to connect to the server.")
 
-
     async def get_db_pallets(self, dt=0):
         app = App.get_running_app()
         # GET Request (Retrieve Pallets)
@@ -49,7 +47,7 @@ class Api:
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{self.base_url}pallets/{app.year}/{app.trip}")
                 if response:
-                    print("get pallets GET response:" ,response)
+                    print("get pallets GET response:", response)
                     resp = response.json().get("pallets", [])
                     app.cargo = resp
                     for row in resp:
@@ -61,7 +59,7 @@ class Api:
                         layer = row['layer']
                         label = row['label']
                         data = app.search_prod(str(label))
-                        Clock.schedule_once(partial(app.set_pallets, data, hold, space, _datetime, label, layer ,_id))
+                        Clock.schedule_once(partial(app.set_pallets, data, hold, space, _datetime, label, layer, _id))
                 else:
                     return
         except Exception as e:
@@ -74,7 +72,7 @@ class Api:
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{self.base_url}trips/{app.year}/{app.trip}")
                 if response:
-                    print("get trip GET response:" ,response)
+                    print("get trip GET response:", response)
                     resp = response.json().get("trips", [])
                     if len(resp):
                         row = resp[0]
@@ -86,7 +84,7 @@ class Api:
                         finished = row['finished']
                         active = row['active']
                     else:
-                        app.nursery.start_soon(self.add_db_trip,app.year,app.trip)
+                        app.nursery.start_soon(self.add_db_trip, app.year, app.trip)
                 else:
                     print("No response")
         except Exception as e:

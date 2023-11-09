@@ -7,11 +7,12 @@ from kivy.clock import Clock
 
 class RemoveToggle(ToggleButton):
     text = "Fjern\npaller!"
-    def on_state(self,*args):
+
+    def on_state(self, *args):
         if self.state == "down":
             App.get_running_app().prod = "-1"
             self.prod_label.text = "Fjern\npaller!"
-            self.prod_label.rect_color = 1,0,0,1
+            self.prod_label.rect_color = 1, 0, 0, 1
             Clock.schedule_once(self.reset_state, 5)
         else:
             App.get_running_app().prod = "0"
@@ -24,8 +25,10 @@ class RemoveToggle(ToggleButton):
         App.get_running_app().prod = "0"
         self.prod_label.rect_color = 0, 0, 0, 0
 
+
 class BottomBar(BoxLayout):
     pass
+
 
 Builder.load_string("""
 <BottomBar>:

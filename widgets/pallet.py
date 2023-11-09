@@ -2,17 +2,19 @@ from kivy.uix.label import Label
 from kivy.properties import ListProperty, NumericProperty
 from kivy.lang import Builder
 
+
 class Pallet(Label):
     db_id = NumericProperty(-1)
-    color2 = ListProperty([0,0,0])
+    color2 = ListProperty([0, 0, 0])
 
     def on_touch_down(self, touch):
-        if self.collide_point(touch.x+self.offset,touch.y-self.offset):
+        if self.collide_point(touch.x + self.offset, touch.y - self.offset):
             if self.active:
                 self.parent.press(self.text)
                 return True
             else:
                 return False
+
 
 Builder.load_string("""
 <Pallet>:

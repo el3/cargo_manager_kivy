@@ -1,8 +1,10 @@
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
 
+
 class ProductsPopup(Popup):
     pass
+
 
 Builder.load_string("""
 <Product@BoxLayout>:

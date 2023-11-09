@@ -1,8 +1,10 @@
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 
+
 class TopBar(BoxLayout):
     pass
+
 
 Builder.load_string("""
 <Gear@ButtonBehavior+Image>:

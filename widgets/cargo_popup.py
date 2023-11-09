@@ -1,8 +1,10 @@
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
 
+
 class CargoPopup(Popup):
     pass
+
 
 Builder.load_string("""
 <Cargo@BoxLayout>:
@@ -32,8 +34,15 @@ Builder.load_string("""
 
 <CargoPopup>:
     title: "Cargo"
-    CargoRV:
-        popup: root
+    BoxLayout:
+        orientation: "vertical"
+        CargoRV:
+            popup: root
+        Button:
+            size_hint_y: .1
+            text: "Luk"
+            on_release:
+                root.dismiss()
 
 <CargoRV@RecycleView>:
     viewclass: 'Cargo'
